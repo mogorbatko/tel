@@ -1,28 +1,26 @@
 package com.gorbatko.tel.command;
 
+import com.gorbatko.tel.beans.ListOfLinks;
 import com.gorbatko.tel.service.SendBotMessageService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-@Component
 public class ListCommand implements Command {
 
+    private static Logger log = Logger.getLogger(ListCommand.class.getName());
+
     private final SendBotMessageService sendBotMessageService;
-    @Value("#{'${list}'.split(',')}")
-    public List<String> list;
 
-    public String listMessage;
+    public ListOfLinks listOfLinks;
+    public List<String> list = listOfLinks.getList();
+    public String listMessage = getListMessage(list);
 
-    @PostConstruct
-    public void setListMessage() {
-        listMessage = getListMessage(list);
-    }
-
+//    public void setListMessage() {
+//        this.list = listOfLinks.getList();
+//    }
     public String getListMessage(List<String> list) {
         String result = list.get(0);
         for (String string :
@@ -33,6 +31,7 @@ public class ListCommand implements Command {
     }
 
     public ListCommand(SendBotMessageService sendBotMessageService) {
+        log.info("Loading constructor");
         this.sendBotMessageService = sendBotMessageService;
     }
 
